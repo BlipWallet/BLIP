@@ -1,0 +1,139 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+ ---
+description: 
+globs: 
+alwaysApply: true
+---
+# BLIP - 솔라나 블록체인 월렛 프로젝트
+
+## 프로젝트 구조
+- **Next.js App Router 아키텍처 적용**
+  - Components
+  - Hooks
+  - Services
+  - Store (Zustand)
+
+## 폴더 구조
+```
+src/
+  ├── assets/              # 이미지, 폰트 등 리소스
+  ├── components/          # UI 컴포넌트
+  │   ├── ui/              # shadcn UI 컴포넌트 (button, card 등)
+  │   ├── layout/          # 레이아웃 관련 컴포넌트
+  │   ├── home/            # 홈 페이지 컴포넌트
+  │   ├── search/          # 검색 페이지 컴포넌트
+  │   ├── social/          # 소셜 페이지 컴포넌트
+  │   └── settings/        # 설정 페이지 컴포넌트
+  ├── hooks/               # 커스텀 훅
+  │   ├── use-wallet.ts    # 지갑 관련 훅
+  │   ├── use-bluetooth.ts # 블루투스 관련 훅
+  │   └── use-social.ts    # 소셜 기능 관련 훅
+  ├── lib/                 # 유틸리티 및 헬퍼 함수
+  │   ├── utils.ts         # 일반 유틸리티 함수
+  │   └── solana.ts        # 솔라나 관련 유틸리티
+  ├── services/            # API 및 외부 서비스 호출
+  │   ├── wallet-service.ts
+  │   ├── bluetooth-service.ts
+  │   └── social-service.ts
+  ├── store/               # Zustand 상태 관리
+  │   ├── wallet-store.ts
+  │   ├── user-store.ts
+  │   ├── social-store.ts
+  │   └── bluetooth-store.ts
+  ├── app/                 # Next.js App Router 
+  │   ├── layout.tsx       # 루트 레이아웃
+  │   ├── page.tsx         # 홈 페이지 (지갑 기능)
+  │   ├── search/          # 블루투스 검색 페이지
+  │   │   └── page.tsx
+  │   ├── social/          # 소셜 페이지
+  │   │   └── page.tsx
+  │   ├── settings/        # 설정 페이지
+  │   │   └── page.tsx
+  └── types/               # TypeScript 타입 정의
+```
+
+## 앱 네비게이션 구조
+- **로그인**: privy를 통한 로그인
+- **홈**: 월렛 기능 (송금/수신/구매)
+- **유저 검색**: 블루투스를 통한 근처 유저 검색
+- **소셜**: 다른 유저들의 구매 포지션 확인
+- **설정**: 앱 설정 및 사용자 프로필 관리
+
+## MVP 기능
+1. **블루투스 유저 검색** (/search)
+   - 근거리에 있는 다른 사용자를 블루투스로 검색
+   - 사용자 프로필 정보 표시
+   - 연결 요청 및 관리
+
+2. **소셜 트레이딩** (/social)
+   - 다른 유저들의 구매 포지션 확인 (ex. vector app?)
+   - 인기 있는 거래 및 트렌드 확인
+   - 팔로우 기능
+
+3. **월렛 기능** (/)
+   - 송금 (Send): 다른 주소로 솔라나 전송
+   - 수신 (Receive): QR 코드 및 주소 공유
+   - wormhole 인앱 브릿지?
+
+4. **설정 기능** (/settings)
+  - 포지션 범위 설정: GPS 기반 혹은 팔로잉, 팔로워 기준 포지션 오픈 범위 설정
+
+## 코딩 규칙
+- TypeScript 언어 사용
+- 함수형 컴포넌트 사용
+- 상태 관리: Zustand 사용
+- UI 컴포넌트: shadcn UI + Tailwind CSS
+- 네트워크 통신: React Query 또는 Next.js 서버 컴포넌트 활용
+- 블루투스 관련: Web Bluetooth API 활용
+- 보안: 생체인증 및 암호화 적용
+- 모바일 반응형 적용 (추후 PWA 배포 예정)
+
+## 컴포넌트 구조
+- 단일 책임 원칙 준수 (컴포넌트는 하나의 역할만 담당)
+- 비즈니스 로직은 hooks 또는 store로 분리
+- 컴포넌트는 가능한 순수 함수형으로 작성
+- 서버 컴포넌트와 클라이언트 컴포넌트 적절히 분리 ('use client' 지시문 활용)
+
+## 스타일링 규칙 (Tailwind CSS)
+- Tailwind 클래스 사용 (className="...")
+- 복잡한 스타일은 분리하여 변수로 선언
+- 다크모드 지원 (dark: 접두사 사용)
+- shadcn UI 컴포넌트 활용
+
+## 상태 관리 (Zustand)
+- 기능별로 스토어 분리
+- 각 스토어는 단일 책임 원칙 준수
+- 상태와 액션을 함께 정의
+
+## 네이밍 규칙
+- 파일명: 소문자 케밥 케이스(kebab-case) 사용 (예: wallet-card.tsx)
+- 컴포넌트: PascalCase 사용 (예: `WalletCard`)
+- 함수 및 변수: camelCase 사용 (예: `fetchBalance`)
+- 상수: 대문자 스네이크 케이스(SNAKE_CASE) 사용 (예: `MAX_TRANSACTION_AMOUNT`)
+
+## 언어는 영어만 지원
+
+## 블록체인 통합
+- Solana Web SDK (@solana/web3.js) 사용
+- privy 사용
+- mayan swap sdk 사용
+- 개인키 안전한 저장 및 관리 (localStorage, cookies, 혹은 IndexedDB 활용)
+- 트랜잭션 서명 프로세스 구현
+
+## UI/UX 가이드라인
+- shadcn UI 컴포넌트 활용
+- Tailwind CSS 기반 스타일링
+- 다크모드 지원
+- 애니메이션 및 전환 효과 최적화
+- 접근성 고려
+
+## Next.js 프로젝트 설정
+- TypeScript 사용
+- App Router 구조 적용
+- 서버 컴포넌트와 클라이언트 컴포넌트 분리
+- PWA 지원을 위한 설정 (next-pwa 활용)
+- SEO 최적화
