@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { usePrivy, useLoginWithOAuth } from "@privy-io/react-auth";
 import Image from "next/image";
@@ -8,12 +8,17 @@ import { Button } from "@/components/ui/button";
 
 export default function LoginPage() {
   const { authenticated, ready } = usePrivy();
+  const [loginError, setLoginError] = useState<string | null>(null);
+  const [imageError, setImageError] = useState(false);
+
   const { initOAuth, loading } = useLoginWithOAuth({
     onComplete: ({ user, isNewUser }) => {
       console.log("로그인 성공:", user, "신규 사용자:", isNewUser);
+      setLoginError(null);
     },
     onError: (error) => {
       console.error("로그인 실패:", error);
+      setLoginError("로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
     },
   });
   const router = useRouter();
@@ -26,9 +31,11 @@ export default function LoginPage() {
 
   const handleGoogleLogin = async () => {
     try {
+      setLoginError(null);
       await initOAuth({ provider: "google" });
     } catch (err) {
       console.error("구글 로그인 오류:", err);
+      setLoginError("구글 로그인 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 
@@ -37,20 +44,31 @@ export default function LoginPage() {
       <div className="w-full max-w-md bg-white rounded-xl shadow-lg p-8 space-y-8">
         <div className="text-center">
           <div className="mb-6 flex justify-center">
-            {/* <Image
-              src="/logo.png"
-              alt="BLIP Logo"
-              width={80}
-              height={80}
-              className="rounded-full"
-              onError={(e) => {
-                e.currentTarget.src = "/next.svg";
-              }}
-            /> */}
+            {!imageError ? (
+              <Image
+                src="/logo.png"
+                alt="BLIP Logo"
+                width={80}
+                height={80}
+                className="rounded-full"
+                onError={() => setImageError(true)}
+                priority
+              />
+            ) : (
+              <div className="w-20 h-20 bg-blue-500 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                B
+              </div>
+            )}
           </div>
           <h1 className="text-3xl font-bold text-gray-900 mb-2">BLIP</h1>
           <p className="text-gray-600 mb-6">솔라나 블록체인 월렛</p>
         </div>
+
+        {loginError && (
+          <div className="bg-red-50 text-red-600 p-3 rounded-md mb-4">
+            {loginError}
+          </div>
+        )}
 
         <div className="space-y-4">
           <Button
